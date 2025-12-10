@@ -1853,3 +1853,4 @@ function getAllEpisodes() {
     },
   ];
 }
+const episodes = getAllEpisodes();

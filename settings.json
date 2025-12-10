@@ -1,0 +1,13 @@
+
+{
+  "liveServer.settings.root": ".",
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.wait": 0,
+  "liveServer.settings.file": "index.html",
+  "liveServer.settings.mount": [],
+  "liveServer.settings.ignore": [
+    "**/.vscode/**",
+    "**/*.scss",
+    
+  ]
+}
