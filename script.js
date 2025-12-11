@@ -24,17 +24,31 @@
 // 2 create function to insert data to dom 
 // 3 call the function setup upon load. 
 
+
+// 1️⃣ Global variable for all episodes
+let allEpisodes = []; // Make this global so search can access it
+
+// 2️⃣ Setup function runs when the page loads
+window.onload = setup;
 function setup() {
-  const allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
+  allEpisodes = getAllEpisodes();        // get data from episodes.js
+  makePageForEpisodes(allEpisodes);         // Display all episodes initially
+  setupSearch();                         // Set up search functionality
+  setupSelect();                             // Set up select dropdown 
+  updateCounter(allEpisodes.length, allEpisodes.length);     // Initialize counter
+
 }
 
+// 3️⃣ Function to render episodes on the page
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
 
-  // Clear the current content
-  rootElem.innerHTML = "";
-
+// Clear only episode container, keep attribution if exists
+//Remove old container
+  const existingContainer = document.querySelector(".episodes-container");
+  if (existingContainer) existingContainer.remove();
+  
+  //create new container
   // Create a container for all episodes
   const episodesContainer = document.createElement("div");
   episodesContainer.className = "episodes-container";
@@ -43,15 +57,19 @@ function makePageForEpisodes(episodeList) {
   for (let i = 0; i < episodeList.length; i++) {
     const episode = episodeList[i];
 
-    // Create episode card
-    const episodeCard = document.createElement("div");
-    episodeCard.className = "episode-card";
+
 
     // Format episode code (S01E01 format)
     // We need to pad season and number to 2 digits
     const seasonPadded = episode.season.toString().padStart(2, "0");
     const episodePadded = episode.number.toString().padStart(2, "0");
     const episodeCode = `S${seasonPadded}E${episodePadded}`;
+
+    // Create episode card
+    const episodeCard = document.createElement("div");
+    episodeCard.className = "episode-card";
+
+
 
     // Set the content for the episode card
     episodeCard.innerHTML = `
@@ -68,10 +86,73 @@ function makePageForEpisodes(episodeList) {
   rootElem.appendChild(episodesContainer);
 
   // Add attribution to TVMaze
-  const attribution = document.createElement("p");
+  let attribution = document.createElement("p");
+   if (!attribution) {
+    attribution = document.createElement("p");
   attribution.innerHTML =
     'Data originally from <a href="https://www.tvmaze.com/" target="_blank">TVMaze.com</a>';
   rootElem.appendChild(attribution);
 }
+ updateCounter(episodeList.length, allEpisodes.length);
+}
+// 4️⃣ Search setup
+function setupSearch() {
+  const input = document.getElementById("searchInput");
 
-window.onload = setup;
+  // Live search: filter as user types
+  input.addEventListener("input", () => {
+    const query = input.value.toLowerCase();
+
+    // Filter global allEpisodes
+    const filtered = allEpisodes.filter(ep =>
+      ep.name.toLowerCase().includes(query) ||
+      ep.summary.toLowerCase().includes(query)
+    );
+
+    // Render only filtered episodes
+    makePageForEpisodes(filtered);
+  });
+}
+// 5️⃣ Select dropdown setup
+function setupSelect() {
+  // create select dynamically above episodes container if not exists
+  let select = document.getElementById("episodeSelect");
+  if (!select) {
+    const topBar = document.querySelector(".top-bar");
+    select = document.createElement("select");
+    select.id = "episodeSelect";
+
+    const allOption = document.createElement("option");
+    allOption.value = "all";
+    allOption.textContent = "-- Show All Episodes --";
+    select.appendChild(allOption);
+
+    
+  }
+ 
+ // Append container above attribution
+  const attribution = document.querySelector("p") || document.createElement("p");
+  if (!attribution.parentElement) {
+    attribution.innerHTML =
+      'Data originally from <a href="https://www.tvmaze.com/" target="_blank">TVMaze.com</a>';
+    rootElem.appendChild(attribution);
+  }
+
+  rootElem.insertBefore(episodesContainer, attribution);
+}
+  // handle select change
+  select.addEventListener("change", () => {
+    const value = select.value;
+    if (value === "all") {
+      makePageForEpisodes(allEpisodes);
+    } else {
+      const selectedEpisode = allEpisodes.find(ep => ep.id == value);
+      makePageForEpisodes([selectedEpisode]);
+    }
+  });
+
+// 6️⃣ Counter updater ("Displaying X/Y episodes")
+function updateCounter(current, total) {
+  const label = document.getElementById("episodeCounter");
+  label.textContent = `Displaying ${current}/${total} episodes`;
+}

@@ -9,8 +9,18 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    
+    <div class="top-bar">
+      <input id="searchInput" type="text" placeholder="Search episodes..." />
+      <p id="count"></p>
+      <button id="countReset" title="Restore automatic updates" style="display:none">Reset</button>
+      <span id="episodeCounter"></span>            
+    </div>
 
+  
+
+    <div id="root"></div>
+    
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
 
