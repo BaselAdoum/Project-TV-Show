@@ -9,7 +9,7 @@
 
 /* ==== BODY ==== */
 body {
-  background-color: #f4f4f7;
+  background-color: #6161a5;
   padding: 40px;
   display: flex;
   justify-content: center;
@@ -77,7 +77,7 @@ body {
   text-align: center;
   margin-top: 40px;
   font-size: 14px;
-  color: #666;
+  color: #a6cac6;
 }
 
 #root > p a {
