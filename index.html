@@ -10,27 +10,27 @@
 
   <body>
     <div class="top-bar">
-      <!-- Show dropdown goes first (left) -->
-      <select id="showSelect"></select>
-
-      <!-- Episode dropdown goes next -->
-      <select id="episodeSelect"></select>
-
-      <!-- Search bar goes next -->
-      <input id="searchInput" type="text" placeholder="Search episodes..." />
-
-      <!-- Episode counter goes last -->
-      <div id="episodeCounter"></div>
-
-      <button
-        id="countReset"
-        title="Restore automatic updates"
-        style="display: none"
-      >
-        Reset
-      </button>
+      <!-- Navigation link to return to shows listing -->
+      <button id="backToShows" class="hidden">← Back to Shows</button>
+      
+      <!-- Show search and controls (only visible on shows listing) -->
+      <div id="showControls" class="hidden">
+        <input id="showSearchInput" type="text" placeholder="Search shows..." />
+        <div id="showCounter"></div>
+        <select id="showDropdown">
+          <option value="">Select a show...</option>
+        </select>
+      </div>
+      
+      <!-- Episode controls (only visible on episodes view) -->
+      <div id="episodeControls" class="hidden">
+        <select id="episodeSelect"></select>
+        <input id="episodeSearchInput" type="text" placeholder="Search episodes..." />
+        <div id="episodeCounter"></div>
+      </div>
     </div>
 
+    <!-- Main content area -->
     <div id="root"></div>
 
     <!-- Loads YOUR javascript code -->
