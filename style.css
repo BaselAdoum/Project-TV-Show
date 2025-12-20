@@ -35,6 +35,21 @@ body {
   align-items: center;
   border-bottom: 2px solid #ddd;
   z-index: 9999;
+  flex-wrap: wrap;
+}
+
+/* ==== SHOW SELECT DROPDOWN ==== */
+#showSelect {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  min-width: 250px;
+}
+
+#showSelect:focus {
+  outline: none;
+  border-color: #0077ff;
 }
 
 /* ==== EPISODE SELECT DROPDOWN ==== */
