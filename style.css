@@ -168,24 +168,3 @@ body {
 .error-message {
   color: #d32f2f;
 }
-
-/* ==== RESPONSIVE DESIGN ==== */
-@media (max-width: 768px) {
-  .top-bar {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 10px;
-  }
-  
-  #showSelect,
-  #episodeSelect,
-  #searchInput {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 10px;
-  }
-  
-  #episodeCounter {
-    text-align: center;
-  }
-}
