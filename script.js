@@ -1,32 +1,79 @@
+// LEVEL 400: Fetch cache 
+const fetchCache = new Map();
+
 // 1️⃣ Global variable for episodes
 let allEpisodes = [];
+
+// LEVEL 400: Currently selected show
+let currentShowId = null;
+// LEVEL 
+// 400: Cached fetch helper
+function cachedFetch(url) {
+  if (!fetchCache.has(url)) {
+    fetchCache.set(url, fetch(url).then(res => res.json()));
+  }
+  return fetchCache.get(url);
+}
 
 // 2️⃣ Setup function
 window.onload = setup;
 
 function setup() {
-  // Remove the hardcoded loading message - it will show naturally during fetch
-  makePageForEpisodes([]); // Start with empty container
+  makePageForEpisodes([]);
+  loadShows();
+  setupSearch();
+  setupSelect();
+
+  document
+    .getElementById("showSelect")
+    .addEventListener("change", (e) => {
+      const showId = e.target.value;
+      if (!showId) return;
+
+      currentShowId = showId;
+      fetchEpisodes(showId);
+    });
+}
+
+
+// ============================
+// Load shows into dropdown *400*
+// ============================
+function loadShows() {
+  cachedFetch("https://api.tvmaze.com/shows")
+    .then(shows => {
+      shows.sort((a, b) =>
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+      );
+
+      const showSelect = document.getElementById("showSelect");
+      showSelect.innerHTML = `<option value="">Select a show</option>`;
+
+      shows.forEach(show => {
+        const option = document.createElement("option");
+        option.value = show.id;
+        option.textContent = show.name;
+        showSelect.appendChild(option);
+      });
+    });
+}
 
   // Fetch data from TVMaze API
-  fetch("https://api.tvmaze.com/shows/82/episodes")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to load episodes");
-      }
-      return response.json();
-    })
-    .then((episodes) => {
+  function fetchEpisodes(showId) {
+  cachedFetch(`https://api.tvmaze.com/shows/${showId}/episodes`)
+    .then(episodes => {
       allEpisodes = episodes;
       makePageForEpisodes(allEpisodes);
       setupSelect();
       setupSearch();
       updateCounter(allEpisodes.length, allEpisodes.length);
     })
-    .catch((error) => {
-      // Show error message only if fetch fails
+    .catch(error => {
       const rootElem = document.getElementById("root");
-      rootElem.innerHTML = `<div class="error-message">Error: Could not load episodes. ${error.message}</div>`;
+      rootElem.innerHTML = `
+        <div class="error-message">
+          Error: Could not load episodes. ${error.message}
+        </div>`;
       updateCounter(0, 0);
     });
 }
@@ -107,7 +154,7 @@ function setupSearch() {
     const filtered = allEpisodes.filter(
       (ep) =>
         ep.name.toLowerCase().includes(query) ||
-        ep.summary.toLowerCase().includes(query)
+        (ep.summary || "").toLowerCase().includes(query)
     );
 
     // Render only filtered episodes
@@ -164,3 +211,4 @@ function updateCounter(current, total) {
     counter.textContent = `Displaying ${current}/${total} episodes`;
   }
 }
+
